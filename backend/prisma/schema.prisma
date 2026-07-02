@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Passenger {
+  id        String   @id @default(uuid())
+  firstName String
+  lastName  String
+  email     String   @unique
+  phone     String?
+  passwordHash String @default("$2b$10$C82OQ5P2Z4n2j8N1Wn5G1eR8r5Z6sQ2v5P2Z4n2j8N1Wn5G1eR8r5") // Fallback mock hash if none set
+  resetToken String?
+  resetTokenExpiry DateTime?
+  loyaltyStatus String @default("MEMBER") // MEMBER, SILVER, GOLD, PLATINUM
+  createdAt DateTime @default(now())
+  bookings  Booking[]
+  chatMessages ChatMessage[]
+  notifications Notification[]
+}
+
+model Flight {
+  id            String   @id @default(uuid())
+  flightNumber  String
+  departureAirport String
+  arrivalAirport   String
+  departureTime DateTime
+  arrivalTime   DateTime
+  status        String   @default("SCHEDULED") // SCHEDULED, DELAYED, CANCELLED
+  createdAt     DateTime @default(now())
+  bookings      Booking[]
+  disruptions   Disruption[]
+}
+
+model Booking {
+  id         String   @id @default(uuid())
+  pnr        String   @unique
+  passengerId String
+  flightId   String
+  seatNumber String?
+  class      String   @default("ECONOMY")
+  passenger  Passenger @relation(fields: [passengerId], references: [id])
+  flight     Flight    @relation(fields: [flightId], references: [id])
+  createdAt  DateTime  @default(now())
+  recoveryRequests RecoveryRequest[]
+}
+
+model Disruption {
+  id          String   @id @default(uuid())
+  flightId    String
+  type        String   // CANCELLED, DELAYED
+  reason      String   // WEATHER, TECHNICAL, OPERATIONAL
+  delayMinutes Int?
+  createdAt   DateTime @default(now())
+  flight      Flight   @relation(fields: [flightId], references: [id])
+}
+
+model RecoveryRequest {
+  id         String   @id @default(uuid())
+  bookingId  String
+  status     String   @default("PENDING") // PENDING, AI_RECOMMENDED, ACCEPTED, ESCALATED, RESOLVED
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  booking    Booking  @relation(fields: [bookingId], references: [id])
+  recommendations RecoveryRecommendation[]
+}
+
+model RecoveryRecommendation {
+  id                String   @id @default(uuid())
+  recoveryRequestId String
+  action            String   // REBOOK, REFUND, WAIT
+  reason            String
+  confidenceScore   Float
+  alternativeFlightId String?
+  status            String   @default("PROPOSED") // PROPOSED, ACCEPTED, REJECTED
+  createdAt         DateTime @default(now())
+  recoveryRequest   RecoveryRequest @relation(fields: [recoveryRequestId], references: [id])
+}
+
+model ChatMessage {
+  id          String    @id @default(uuid())
+  passengerId String
+  role        String    // 'user' or 'assistant' (changed to 'assistant' to map to Gemini seamlessly)
+  text        String
+  createdAt   DateTime  @default(now())
+  passenger   Passenger @relation(fields: [passengerId], references: [id])
+}
+
+model Notification {
+  id          String    @id @default(uuid())
+  passengerId String
+  type        String    // disruption, recovery, confirm, info
+  title       String
+  description String
+  unread      Boolean   @default(true)
+  createdAt   DateTime  @default(now())
+  passenger   Passenger @relation(fields: [passengerId], references: [id])
+}

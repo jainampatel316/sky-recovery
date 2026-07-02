@@ -1,0 +1,508 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/geist";
+@import "@fontsource/ibm-plex-mono";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  /* === Font families (migrated from v3) === */
+  --font-sans: "Geist Variable", "Inter Variable", sans-serif;
+  /* for heading and content */
+  --font-mono: "monospace", "Inter Variable", sans-serif;
+  /* for http links */
+  --font-code: "IBM Plex Mono Variable", monospace, sans-serif;
+  /* for code blocks */
+
+  /* === Shadcn semantic tokens (auto-switch via .dark) === */
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover-border: var(--popover-border);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+
+  /* custom */
+  --color-layout: var(--layout);
+  --color-card-border: var(--card-border);
+  --color-card-accent: var(--card-accent);
+  --color-skeleton: var(--skeleton);
+
+  /* === Radii (shadcn) === */
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: 2rem;
+
+  /* === Tag Theme Colors === */
+  --color-tag-free: var(--tag-free);
+  --color-tag-free-bg: var(--tag-free-bg);
+  --color-tag-pro: var(--tag-pro);
+  --color-tag-pro-bg: var(--tag-pro-bg);
+
+  --color-tag-accepted: var(--tag-accepted);
+  --color-tag-accepted-bg: var(--tag-accepted-bg);
+  --color-tag-rejected: var(--tag-rejected);
+  --color-tag-rejected-bg: var(--tag-rejected-bg);
+  --color-tag-pending: var(--tag-pending);
+  --color-tag-pending-bg: var(--tag-pending-bg);
+  --color-tag-closed: var(--tag-closed);
+  --color-tag-closed-bg: var(--tag-closed-bg);
+  --color-tag-duplicate: var(--tag-duplicate);
+  --color-tag-duplicate-bg: var(--tag-duplicate-bg);
+  --color-tag-under-review: var(--tag-under-review);
+  --color-tag-under-review-bg: var(--tag-under-review-bg);
+
+  --color-tag-easy: var(--tag-easy);
+  --color-tag-easy-bg: var(--tag-easy-bg);
+  --color-tag-medium: var(--tag-medium);
+  --color-tag-medium-bg: var(--tag-medium-bg);
+  --color-tag-hard: var(--tag-hard);
+  --color-tag-hard-bg: var(--tag-hard-bg);
+  --color-tag-expert: var(--tag-expert);
+  --color-tag-expert-bg: var(--tag-expert-bg);
+  --color-tag-spec: var(--tag-spec);
+  --color-tag-spec-bg: var(--tag-spec-bg);
+}
+
+/* === Keyframes (referenced by --animate-*) === */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Celebration popover decorations (entrance/exit handled by the shadcn Dialog) */
+@keyframes celebrate-confetti {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) rotate(0deg) scale(0.4);
+  }
+  10% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--cx), var(--cy)) rotate(var(--cr)) scale(1);
+  }
+}
+
+@keyframes celebrate-trophy-bounce {
+  0%, 100% {
+    transform: translateY(0) rotate(-6deg);
+  }
+  50% {
+    transform: translateY(-4px) rotate(6deg);
+  }
+}
+
+/* === Custom utility (v3 borderWidth.3) === */
+@utility border-3 {
+  border-width: 3px;
+}
+
+:root, .light {
+  --background: #F7F7F5;
+  --foreground: #18181b;
+  --layout: #F8F8FA;
+  --card: #F8F8FA;
+  --card-foreground: #18181b;
+  --card-border: #e4e4e7;
+  --card-outline: #e4e4e7;
+  --card-accent: #efeff3;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+  --popover-border: transparent;
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #18181b;
+  --muted: #f4f4f5;
+  --muted-foreground: #71717a;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #dc2626;
+  --border: #e4e4e7;
+  --input: #e4e4e7;
+  --ring: #7c3aed;
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --radius: 0.625rem;
+  --sidebar: #F8F8FA;
+  --sidebar-foreground: #18181b;
+  --sidebar-primary: #7c3aed;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #efeff3;
+  --sidebar-accent-foreground: #18181b;
+  --sidebar-border: #e4e4e7;
+  --sidebar-ring: #7c3aed;
+
+  /* Skeleton placeholder (more visible than muted in light mode) */
+  --skeleton: #d4d4d8;
+
+  /* Tag Theme Colors */
+  --tag-free: #0d9488;
+  --tag-free-bg: #f0fdfa;
+  --tag-pro: #4f46e5;
+  --tag-pro-bg: #e0e7ff;
+
+  --tag-accepted: #16a34a;
+  --tag-accepted-bg: #f0fdf4;
+  --tag-rejected: #dc2626;
+  --tag-rejected-bg: #fef2f2;
+  --tag-pending: #d97706;
+  --tag-pending-bg: #fffbeb;
+  --tag-closed: #71717a;
+  --tag-closed-bg: #f4f4f5;
+  --tag-duplicate: #9333ea;
+  --tag-duplicate-bg: #faf5ff;
+  --tag-under-review: #2563eb;
+  --tag-under-review-bg: #eff6ff;
+
+  --tag-easy: #16a34a;
+  --tag-easy-bg: #f0fdf4;
+  --tag-medium: #d97706;
+  --tag-medium-bg: #fffbeb;
+  --tag-hard: #ea580c;
+  --tag-hard-bg: #fff7ed;
+  --tag-expert: #e11d48;
+  --tag-expert-bg: #fff1f2;
+  --tag-spec: #71717a;
+  --tag-spec-bg: #f4f4f5;
+}
+
+.dark {
+  --card-outline: #3F3F46;
+  --background: #1E1D1D;
+  --foreground: #F8F8FA;
+  --layout: #242323;
+  --card: #242323;
+  --card-foreground: #f4f4f5;
+  --card-border: #3f3f46;
+  --card-accent: #27272a;
+  --popover: #222223;
+  --popover-foreground: #f4f4f5;
+  --popover-border: #3f3f46;
+  --primary: #7c3aed;
+  --primary-foreground: #ffffff;
+  --secondary: #27272a;
+  --secondary-foreground: #f4f4f5;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #27272a;
+  --accent-foreground: #f4f4f5;
+  --destructive: #dc2626;
+  --border: #27272a;
+  --input: #27272a;
+  --ring: #7c3aed;
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: #242323;
+  --sidebar-foreground: #f4f4f5;
+  --sidebar-primary: #7c3aed;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #27272a;
+  --sidebar-accent-foreground: #f4f4f5;
+  --sidebar-border: #27272a;
+  --sidebar-ring: #7c3aed;
+
+  /* Skeleton placeholder (keeps muted look in dark mode) */
+  --skeleton: var(--muted);
+
+  /* Tag Theme Colors */
+  --tag-free: #2dd4bf;
+  --tag-free-bg: #115e59;
+  --tag-pro: #c7d2fe;
+  --tag-pro-bg: #312e81;
+
+  --tag-accepted: #4ade80;
+  --tag-accepted-bg: #064e3b;
+  --tag-rejected: #f87171;
+  --tag-rejected-bg: #450a0a;
+  --tag-pending: #fbbf24;
+  --tag-pending-bg: #451a03;
+  --tag-closed: #a1a1aa;
+  --tag-closed-bg: #27272a;
+  --tag-duplicate: #c084fc;
+  --tag-duplicate-bg: #3b0764;
+  --tag-under-review: #60a5fa;
+  --tag-under-review-bg: #172554;
+
+  --tag-easy: #4ade80;
+  --tag-easy-bg: #064e3b;
+  --tag-medium: #fbbf24;
+  --tag-medium-bg: #451a03;
+  --tag-hard: #f97316;
+  --tag-hard-bg: #431407;
+  --tag-expert: #fb7185;
+  --tag-expert-bg: #4c0519;
+  --tag-spec: #a1a1aa;
+  --tag-spec-bg: #27272a;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  html {
+    @apply font-sans;
+
+    /* Firefox */
+    scrollbar-width: thin;
+    scrollbar-color: var(--card-border) transparent;
+  }
+
+  /* WebKit (Chrome, Safari, Edge) — thin by default */
+  ::-webkit-scrollbar {
+    width: 3px;
+    height: 3px;
+  }
+
+  /* Thicker on hover so the user can grab and scroll. Matches any
+     hovered element, including ancestors of the cursor, so the page
+     scrollbar and nested scrollable containers all expand. */
+  *:hover::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  /* Hide the up/down arrow buttons */
+  ::-webkit-scrollbar-button {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  ::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: var(--card-border);
+    transition: background-color 150ms ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--muted-foreground);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  /* Fully hide the scrollbar (still scrollable) */
+  .remove-scrollbar {
+    scrollbar-width: none;
+  }
+
+  .remove-scrollbar::-webkit-scrollbar,
+  .remove-scrollbar::-webkit-scrollbar-track,
+  .remove-scrollbar::-webkit-scrollbar-thumb {
+    display: none;
+  }
+}
+
+/* Sidebar user card — liquid glass */
+.user-glass-card {
+  background:
+    radial-gradient(circle at 18% 50%, rgba(82, 82, 91, 0.18), transparent 55%),
+    radial-gradient(circle at 85% 50%, rgba(113, 113, 122, 0.14), transparent 55%),
+    rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.9),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.3),
+    0 2px 8px -2px rgba(0, 0, 0, 0.08);
+}
+
+.dark .user-glass-card {
+  background:
+    radial-gradient(circle at 18% 50%, rgba(212, 212, 216, 0.3), transparent 55%),
+    radial-gradient(circle at 85% 50%, rgba(161, 161, 170, 0.2), transparent 55%),
+    rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.2),
+    inset 0 -1px 0 0 rgba(255, 255, 255, 0.04),
+    0 2px 8px -2px rgba(0, 0, 0, 0.4);
+}
+
+/* Hide pill chrome when sidebar is collapsed to icon mode */
+[data-collapsible="icon"] .user-glass-card {
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.user-glass-avatar {
+  background: linear-gradient(135deg, #d4d4d8, #52525b);
+  color: white;
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.5),
+    0 2px 5px -1px rgba(82, 82, 91, 0.35);
+}
+
+.dark .user-glass-avatar {
+  background: linear-gradient(135deg, #3f3f46, #18181b);
+  color: rgba(228, 228, 231, 0.95);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.15),
+    0 2px 5px -1px rgba(24, 24, 27, 0.6);
+}
+
+/* Custom utility classes for status and tier tags */
+.tag-free {
+  background-color: var(--tag-free-bg);
+  color: var(--tag-free);
+}
+
+.tag-pro {
+  background-color: var(--tag-pro-bg);
+  color: var(--tag-pro);
+}
+
+.tag-accepted {
+  background-color: var(--tag-accepted-bg);
+  color: var(--tag-accepted);
+}
+
+.tag-rejected {
+  background-color: var(--tag-rejected-bg);
+  color: var(--tag-rejected);
+}
+
+.tag-pending {
+  background-color: var(--tag-pending-bg);
+  color: var(--tag-pending);
+}
+
+.tag-closed {
+  background-color: var(--tag-closed-bg);
+  color: var(--tag-closed);
+}
+
+.tag-duplicate {
+  background-color: var(--tag-duplicate-bg);
+  color: var(--tag-duplicate);
+}
+
+.tag-under-review {
+  background-color: var(--tag-under-review-bg);
+  color: var(--tag-under-review);
+}
+
+.tag-easy {
+  background-color: var(--tag-easy-bg);
+  color: var(--tag-easy);
+}
+
+.tag-medium {
+  background-color: var(--tag-medium-bg);
+  color: var(--tag-medium);
+}
+
+.tag-hard {
+  background-color: var(--tag-hard-bg);
+  color: var(--tag-hard);
+}
+
+.tag-expert {
+  background-color: var(--tag-expert-bg);
+  color: var(--tag-expert);
+}
+
+.tag-spec {
+  background-color: var(--tag-spec-bg);
+  color: var(--tag-spec);
+}
+
+/* Reports Custom Important Card Backgrounds */
+.reports-important-card {
+  background-color: #F0F0F3;
+}
+
+.reports-important-card:hover {
+  background-color: #E5E5E9;
+}
+
+.dark .reports-important-card {
+  background-color: #1A1919;
+}
+
+.dark .reports-important-card:hover {
+  background-color: #242323;
+}
+/* SkyRecover AI custom animations */
+@keyframes slide-in-right {
+  from { opacity: 0; transform: translateX(16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.animate-fade-in-up { animation: fade-in-up 0.35s ease both; }
+.animate-fade-in    { animation: fade-in 0.25s ease both; }
+.animate-slide-in   { animation: slide-in-right 0.3s ease both; }
+.animate-pulse-dot  { animation: pulse-dot 1.8s ease-in-out infinite; }
