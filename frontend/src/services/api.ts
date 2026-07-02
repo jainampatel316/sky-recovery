@@ -1,5 +1,5 @@
 // Centralised API layer – all fetch calls go here
-const BASE = 'http://localhost:3001/api';
+const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 export async function getPassengerByEmail(email: string) {
   const r = await fetch(`${BASE}/passenger/email/${email}`);
