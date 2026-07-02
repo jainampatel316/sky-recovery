@@ -364,7 +364,7 @@ Be concise, helpful, and professional.`;
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "x-goog-api-key": GEMINI_API_KEY
+        "x-goog-api-key": GEMINI_API_KEY || ''
       },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: systemPrompt }] },
