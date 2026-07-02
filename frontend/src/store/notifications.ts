@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { Notification } from '../types';
 
-const BASE = 'http://localhost:3001/api';
+const BASE = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 let _notifications: Notification[] = [];
 let _listeners: (() => void)[] = [];
